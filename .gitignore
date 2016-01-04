@@ -1,0 +1,9 @@
+*.log
+*.elog
+
+# Incisive build files
+.simvision
+INCA_libs
+irun.*
+*.shm
+.rmi_process

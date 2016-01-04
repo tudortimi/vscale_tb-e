@@ -1,0 +1,12 @@
+[submodule "vgm_ahb"]
+	path = vgm_ahb
+	url = https://github.com/tudortimi/vgm_ahb-e.git
+[submodule "vgm_risc_v"]
+	path = vgm_risc_v
+	url = https://github.com/tudortimi/vgm_risc_v-e.git
+[submodule "vgm_risc_v_ahb"]
+	path = vgm_risc_v_ahb
+	url = https://github.com/tudortimi/vgm_risc_v_ahb-e.git
+[submodule "vscale"]
+	path = vscale
+	url = https://github.com/tudortimi/vscale.git

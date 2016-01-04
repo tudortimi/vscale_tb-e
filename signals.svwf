@@ -1,0 +1,92 @@
+
+#
+# Mnemonic Maps
+#
+mmap new -reuse -name {Boolean as Logic} -radix %b -contents {{%c=FALSE -edgepriority 1 -shape low}
+{%c=TRUE -edgepriority 1 -shape high}}
+mmap new -reuse -name {Example Map} -radix %x -contents {{%b=11???? -bgcolor orange -label REG:%x -linecolor yellow -shape bus}
+{%x=1F -bgcolor red -label ERROR -linecolor white -shape EVENT}
+{%x=2C -bgcolor red -label ERROR -linecolor white -shape EVENT}
+{%x=* -label %x -linecolor gray -shape bus}}
+
+array unset createdGroup
+array set createdGroup {}
+#
+# Groups
+#
+if {[catch {group get -using [list Instruction AHB]}]} {
+set createdGroup([list Instruction AHB]) 1
+catch {group new -name {Instruction AHB} -overlay 0}
+}
+if {[catch {group get -using [list Internals]}]} {
+set createdGroup([list Internals]) 1
+catch {group new -name Internals -overlay 0}
+}
+if {[catch {group get -using [list Data AHB]}]} {
+set createdGroup([list Data AHB]) 1
+catch {group new -name {Data AHB} -overlay 0}
+}
+if {[info exists createdGroup([list Instruction AHB])]} {
+group using {Instruction AHB}
+group set -overlay 0
+group set -comment {}
+group clear 0 end
+group insert \
+    [subst  {[format {vscale_tb.dut.imem_hburst[2:0]}]} ] \
+    [subst  {[format {vscale_tb.dut.imem_hsize[2:0]}]} ] \
+    [subst  {[format {vscale_tb.dut.imem_hwrite}]} ] \
+    [subst  {[format {vscale_tb.dut.imem_haddr[31:0]}]} ] \
+    [subst  {[format {vscale_tb.dut.imem_htrans[1:0]}]} ] \
+    [subst  {[format {vscale_tb.dut.imem_hwdata[31:0]}]} ] \
+    [subst  {[format {vscale_tb.dut.imem_hresp[0:0]}]} ] \
+    [subst  {[format {vscale_tb.dut.imem_hready}]} ] \
+    [subst  {[format {vscale_tb.dut.imem_hrdata[31:0]}]} ] \
+    [subst  {[format {vscale_tb.dut.imem_hprot[3:0]}]} ] \
+    [subst  {[format {vscale_tb.dut.imem_hmastlock}]} ]
+}
+
+if {[info exists createdGroup([list Internals])]} {
+group using Internals
+group set -overlay 0
+group set -comment {}
+group clear 0 end
+group insert \
+    [subst  {[format {vscale_tb.dut.pipeline.regfile.data[31:0]}]} ]
+}
+
+if {[info exists createdGroup([list Data AHB])]} {
+group using {Data AHB}
+group set -overlay 0
+group set -comment {}
+group clear 0 end
+group insert \
+    [subst  {[format {vscale_tb.dut.dmem_hburst[2:0]}]} ] \
+    [subst  {[format {vscale_tb.dut.dmem_hsize[2:0]}]} ] \
+    [subst  {[format {vscale_tb.dut.dmem_hwrite}]} ] \
+    [subst  {[format {vscale_tb.dut.dmem_haddr[31:0]}]} ] \
+    [subst  {[format {vscale_tb.dut.dmem_htrans[1:0]}]} ] \
+    [subst  {[format {vscale_tb.dut.dmem_hwdata[31:0]}]} ] \
+    [subst  {[format {vscale_tb.dut.dmem_hresp[0:0]}]} ] \
+    [subst  {[format {vscale_tb.dut.dmem_hready}]} ] \
+    [subst  {[format {vscale_tb.dut.dmem_hrdata[31:0]}]} ] \
+    [subst  {[format {vscale_tb.dut.dmem_hprot[3:0]}]} ] \
+    [subst  {[format {vscale_tb.dut.dmem_hmastlock}]} ]
+}
+
+set id [waveform add -signals [subst  {
+	{[format {vscale_tb.dut.htif_reset}]}
+	} ]]
+set id [waveform add -signals [subst  {
+	{[format {vscale_tb.dut.clk}]}
+	} ]]
+
+set groupId0 [waveform add -groups {{Instruction AHB}}]
+
+
+set groupId0 [waveform add -groups {{Data AHB}}]
+
+
+set groupId0 [waveform add -groups Internals]
+
+
+waveform xview limits 0 145ns
