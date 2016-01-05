@@ -33,5 +33,6 @@ irun \
   -snset "config simulation -enable_ports_unification=TRUE" \
   -snset "set notify -severity=IGNORE -max=1 STUB_ELAB_DECLARED_RANGE_PORT_FALSE" \
   -snload e/vscale_tb_top.e \
+  -snload sve/vscale_tb.e \
   -snload "tests/$1.e" \
   $gui_opts

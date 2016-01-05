@@ -34,6 +34,7 @@ extend vgm_ahb::agent_id : [ IMEM, DMEM ];
 
 extend vscale_tb_env {
   imem_agent : IMEM vgm_ahb::slave_agent is instance;
+    keep soft imem_agent.mode == ACTIVE;
     keep imem_agent.smap.HRESETn.hdl_path() == "htif_reset";
     keep imem_agent.smap.HCLK.hdl_path() == "clk";
     keep imem_agent.smap.HWRITE.hdl_path() == "imem_hwrite";
@@ -45,6 +46,7 @@ extend vscale_tb_env {
     keep imem_agent.smap.HRDATA.hdl_path() == "imem_hrdata";
 
   dmem_agent : DMEM vgm_ahb::slave_agent is instance;
+    keep soft dmem_agent.mode == ACTIVE;
     keep dmem_agent.smap.HRESETn.hdl_path() == "htif_reset";
     keep dmem_agent.smap.HCLK.hdl_path() == "clk";
     keep dmem_agent.smap.HWRITE.hdl_path() == "dmem_hwrite";
@@ -64,8 +66,17 @@ Implement instruction layering
 extend vscale_tb_env {
   istream_driver : vgm_risc_v::instruction_stream_driver is instance;
 
-  on imem_agent.driver.clock {
-    emit istream_driver.clock;
+  run() is also {
+    start emit_istream_driver_clock();
+  };
+
+  emit_istream_driver_clock() @sys.any is {
+    if imem_agent is a ACTIVE vgm_ahb::slave_agent (imem) {
+      while TRUE {
+        wait cycle @imem.driver.clock;
+        emit istream_driver.clock;
+      };
+    };
   };
 };
 
