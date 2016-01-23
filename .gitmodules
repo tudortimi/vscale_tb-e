@@ -9,4 +9,4 @@
 	url = https://github.com/tudortimi/vgm_risc_v_ahb-e.git
 [submodule "vscale"]
 	path = vscale
-	url = https://github.com/tudortimi/vscale.git
+	url = https://github.com/ucb-bar/vscale.git
